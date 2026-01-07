@@ -1,0 +1,209 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Heart, ChevronRight, Music, Volume2, VolumeX, Sparkles, MailOpen } from 'lucide-react';
+
+const FinalSpecialSite = () => {
+  const [step, setStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [revealedCount, setRevealedCount] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Load Google Fonts
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;600&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
+  // Cuteness Meter Logic
+  useEffect(() => {
+    if (step === 1 && progress < 120) {
+      const timer = setTimeout(() => {
+        const increment = progress > 100 ? 1 : 2;
+        setProgress(prev => prev + increment);
+      }, 35);
+      return () => clearTimeout(timer);
+    }
+  }, [step, progress]);
+
+  const compliments = [
+    "Your smile is my favorite sight",
+    "You have the kindest soul I've ever met",
+    "You make everything feel so effortless",
+    "You're beautiful in ways words can't describe",
+    "I'm so lucky to have you in my life"
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#0d0208] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden" 
+         style={{ fontFamily: "'Inter', sans-serif" }}>
+      
+      {/* Dynamic Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-900/20 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Floating Hearts Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ y: '110vh', x: Math.random() * 100 + 'vw' }}
+            animate={{ y: '-10vh' }}
+            transition={{ duration: Math.random() * 10 + 15, repeat: Infinity, ease: "linear" }}
+            className="absolute text-pink-500/40"
+          >
+            <Heart size={Math.random() * 20 + 10} fill="currentColor" />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Music Toggle */}
+      <button 
+        onClick={() => setIsPlaying(!isPlaying)}
+        className="fixed top-8 right-8 z-50 p-4 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 transition-all shadow-2xl"
+      >
+        {isPlaying ? <Volume2 size={22} className="text-pink-400" /> : <VolumeX size={22} />}
+      </button>
+
+      <AnimatePresence mode="wait">
+        
+        {/* --- STEP 0: THE INTRO --- */}
+        {step === 0 && (
+          <motion.div 
+            key="intro"
+            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, y: -20 }}
+            className="text-center z-10"
+          >
+            <motion.div 
+              animate={{ y: [0, -15, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              className="w-44 h-44 mx-auto rounded-full border-[3px] border-pink-500/40 p-3 mb-10 shadow-[0_0_50px_rgba(236,72,153,0.2)]"
+            >
+               <div className="w-full h-full bg-gradient-to-tr from-pink-200 to-rose-100 rounded-full flex items-center justify-center text-7xl shadow-inner">
+                 ✨
+               </div>
+            </motion.div>
+            <h1 className="text-7xl mb-6 bg-gradient-to-b from-pink-200 via-rose-400 to-pink-600 bg-clip-text text-transparent drop-shadow-sm"
+                style={{ fontFamily: "'Dancing Script', cursive" }}>
+              Hey Beautiful
+            </h1>
+            <p className="text-gray-400 text-sm tracking-[0.3em] uppercase mb-12 font-light">Specifically for you</p>
+            <button 
+              onClick={() => { setStep(1); setIsPlaying(true); }}
+              className="group relative px-12 py-5 bg-transparent border border-pink-400/50 rounded-full transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.4)]"
+            >
+              <span className="relative z-10 flex items-center gap-3 font-semibold text-pink-300 group-hover:text-white transition-colors tracking-widest text-sm">
+                OPEN MY HEART <Heart size={18} fill="currentColor" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-rose-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 rounded-full" />
+            </button>
+          </motion.div>
+        )}
+
+        {/* --- STEP 1: SCANNER --- */}
+        {step === 1 && (
+          <motion.div 
+            key="meter"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="w-full max-w-sm text-center z-10"
+          >
+            <h2 className="text-xl font-light mb-12 text-pink-100/70 tracking-[0.2em] flex items-center justify-center gap-3">
+              <Sparkles className="text-pink-400" size={20} /> ANALYZING CUTENESS...
+            </h2>
+            <div className="relative h-[6px] w-full bg-white/5 rounded-full overflow-hidden mb-8">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-pink-500 to-rose-400 shadow-[0_0_15px_rgba(236,72,153,0.8)]"
+                style={{ width: ${(progress / 120) * 100}% }}
+              />
+            </div>
+            <motion.p className="text-8xl font-bold text-white mb-6 tracking-tighter"
+                      style={{ textShadow: '0 0 20px rgba(236,72,153,0.5)' }}>
+              {progress}%
+            </motion.p>
+            
+            {progress >= 120 && (
+              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mt-10">
+                <p className="text-rose-400 font-bold py-2 px-8 rounded-full border border-rose-500/30 bg-rose-500/10 inline-block text-xs tracking-widest mb-10">
+                  SYSTEM OVERLOAD: LIMIT EXCEEDED
+                </p>
+                <br />
+                <button onClick={() => setStep(2)} className="bg-white text-black font-bold py-4 px-10 rounded-full hover:scale-105 transition-transform shadow-xl">
+                  Next Step
+                </button>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
+        {/* --- STEP 2: REVEAL CARDS --- */}
+        {step === 2 && (
+          <motion.div 
+            key="reveal"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="w-full max-w-md z-10 px-4"
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-4xl text-pink-200 mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>Small things about you...</h2>
+              <p className="text-gray-500 text-xs tracking-widest uppercase">Tap to reveal each one</p>
+            </div>
+            <div className="space-y-4">
+              {compliments.map((text, i) => (
+                <RevealCard key={i} text={text} index={i} onReveal={() => setRevealedCount(prev => prev + 1)} />
+              ))}
+            </div>
+            {revealedCount >= compliments.length && (
+              <motion.button 
+                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+                onClick={() => setStep(3)}
+                className="mt-12 w-full py-5 bg-white/5 border border-pink-500/30 rounded-2xl text-pink-300 font-semibold hover:bg-pink-500/10 transition-all flex items-center justify-center gap-2 tracking-widest text-sm"
+              >
+                ONE LAST THING <ChevronRight size={18} />
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+
+        {/* --- STEP 3: FINAL LETTER --- */}
+        {step === 3 && (
+          <motion.div 
+            key="letter"
+            initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+            className="bg-[#fffafa] text-gray-800 p-12 rounded-[2.5rem] max-w-md shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative z-10 mx-4"
+          >
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-tr from-rose-500 to-pink-400 rounded-full flex items-center justify-center shadow-2xl">
+               <MailOpen className="text-white" size={28} />
+            </div>
+            <h3 className="text-4xl mb-8 text-center text-rose-600" style={{ fontFamily: "'Dancing Script', cursive" }}>My Heart to Yours</h3>
+            <div className="space-y-6 text-lg leading-relaxed text-gray-700 italic font-light">
+              <p>
+                I wanted to create something as unique as you are. Watching your smile is the highlight of my day, and I hope this made you smile today too.
+              </p>
+              <p>
+                You are my favorite person, and I’m so grateful for every moment we share.
+              </p>
+            </div>
+            <div className="mt-12 pt-8 border-t border-rose-100 text-center">
+               <p className="text-rose-500 text-2xl mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>Always & Forever,</p>
+               <p className="font-bold tracking-widest text-xs text-gray-400 uppercase">Your Biggest Fan</p>
+               <motion.div 
+                animate={{ scale: [1, 1.3, 1] }} 
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="inline-block mt-6"
+               >
+                 <Heart className="text-rose-500" fill="currentColor" size={32} />
+               </motion.div>
+            </div>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Internal Helper Component
+const RevealCard = ({ text, index, onReveal }) => {
+  const [opened, setOpened] = useState(false);
+
+  return (
+    <motion.div
